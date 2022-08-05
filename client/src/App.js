@@ -13,13 +13,15 @@ function App() {
   // 받은 데이터를 화면에 렌더하기 위한 작업
   const [todoList, setTodoList] = useState(null);
 
+  const fetchData = () => {
+    fetch("http://localhost:4000/api/todo")
+      .then((response) => response.json())
+      .then((data) => setTodoList(data));
+  }
+
   // 컴포넌트가 최초 렌더링 될 때만 실행될 수 있도록 함 (데이터 fetch 반복으로 상태가 계속 변경되서 무한 반복되는 걸 방지)
   // useEffect 활용
-  useEffect(() => {
-    fetch("http://localhost:4000/api/todo")
-    .then((response) => response.json())
-    .then((data) => setTodoList(data));
-  }, [])
+  useEffect(() => {fetchData()}, [])
   
   // 클릭 했을 때
   const onSubmitHandler = (e) => {
@@ -37,8 +39,7 @@ function App() {
         text,
         done,
       })
-    })
-
+    }).then(() => {fetchData()})  // 추가하고나서 다시 서버로부터 데이터를 받아와야 추가된 데이터까지 화면에 바로 그려짐
   }
 
   return (
